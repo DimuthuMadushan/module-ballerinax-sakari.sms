@@ -46,6 +46,22 @@ public type LinkSource record {
     string id?;
 };
 
+# Request payload for creating or updating an autoresponder
+public type AutoresponderRequest record {
+    # When the autoresponder is active: out of office, in office or on a custom schedule
+    "OOO"|"in office"|"custom" scheduleType?;
+    # Whether advanced matching settings are used
+    boolean advanced = false;
+    # Reply sent when an incoming message matches
+    string response;
+    # Text or pattern that incoming messages are matched against
+    string 'match;
+    # Custom schedule settings used when the schedule type is custom
+    record {} customObject?;
+    # Group whose incoming messages the autoresponder applies to
+    string group?;
+};
+
 # A version of a workflow and its definition
 public type WorkflowVersion record {
     # Whether the version is read-only
@@ -101,7 +117,7 @@ public type SendMessagesRequest record {
     # List of conversation ids to send messages to
     string[] conversations?;
     # Contacts to send the message to
-    Contact[] contacts?;
+    ContactRequest[] contacts?;
 };
 
 # Paginated response containing a list of drip campaigns
@@ -845,6 +861,13 @@ public type GoogleSheetsExportNodeConfig record {
     GoogleSheetColumnMapping[] properties?;
 };
 
+# Request payload that identifies or describes a contact: its name, email, mobile number and custom attributes, or the ID of an existing contact
+public type ContactRequest record {
+    *Person;
+    # Custom attributes of the contact
+    record {} attributes?;
+};
+
 # A time range within a day, with a start and an end time
 public type Hours record {
     # A time of day expressed as an hour and minute
@@ -1379,9 +1402,9 @@ public type Conversation record {
     # A contact in the Sakari address book
     Contact contact?;
     # An SMS or MMS message sent to or received from a contact
-    Message lastMessage;
+    Message lastMessage?;
     # Date and time the conversation was closed
-    string closed;
+    string closed?;
     # Unique identifier of the conversation
     string id?;
     # Type of the conversation

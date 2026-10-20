@@ -7,7 +7,7 @@ The `ballerinax/sakari.sms` connector provides practical examples illustrating u
 
 ## Prerequisites
 
-- A Sakari account with API credentials (client ID and client secret).
+- A Sakari account with API credentials (client ID and client secret) and its account ID.
 - Ballerina Swan Lake 2201.12.0 or later.
 
 ## Running an example

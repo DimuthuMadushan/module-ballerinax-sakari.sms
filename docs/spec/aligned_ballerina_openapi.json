@@ -154,7 +154,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Autoresponder"
+                                "$ref": "#/components/schemas/AutoresponderRequest"
                             }
                         }
                     },
@@ -245,7 +245,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Autoresponder"
+                                "$ref": "#/components/schemas/AutoresponderRequest"
                             }
                         }
                     },
@@ -476,7 +476,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Contact"
+                                "$ref": "#/components/schemas/ContactRequest"
                             }
                         },
                         "text/csv": {
@@ -616,7 +616,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Contact"
+                                "$ref": "#/components/schemas/ContactRequest"
                             }
                         }
                     },
@@ -2193,7 +2193,7 @@
                     {
                         "name": "url",
                         "in": "path",
-                        "description": "URL-encoded callback URL of the webhook subscription to remove",
+                        "description": "Callback URL of the webhook subscription to remove, as a plain URL. The connector URL-encodes it",
                         "required": true,
                         "style": "simple",
                         "explode": false,
@@ -2810,6 +2810,46 @@
                 },
                 "description": "A rule that automatically replies to incoming messages matching a pattern"
             },
+            "AutoresponderRequest": {
+                "required": [
+                    "match",
+                    "response"
+                ],
+                "type": "object",
+                "properties": {
+                    "scheduleType": {
+                        "type": "string",
+                        "description": "When the autoresponder is active: out of office, in office or on a custom schedule",
+                        "enum": [
+                            "OOO",
+                            "in office",
+                            "custom"
+                        ]
+                    },
+                    "advanced": {
+                        "type": "boolean",
+                        "description": "Whether advanced matching settings are used",
+                        "default": false
+                    },
+                    "response": {
+                        "type": "string",
+                        "description": "Reply sent when an incoming message matches"
+                    },
+                    "match": {
+                        "type": "string",
+                        "description": "Text or pattern that incoming messages are matched against"
+                    },
+                    "customObject": {
+                        "type": "object",
+                        "description": "Custom schedule settings used when the schedule type is custom"
+                    },
+                    "group": {
+                        "type": "string",
+                        "description": "Group whose incoming messages the autoresponder applies to"
+                    }
+                },
+                "description": "Request payload for creating or updating an autoresponder"
+            },
             "WorkflowVersion": {
                 "required": [
                     "created",
@@ -2998,7 +3038,7 @@
                         "type": "array",
                         "description": "Contacts to send the message to",
                         "items": {
-                            "$ref": "#/components/schemas/Contact"
+                            "$ref": "#/components/schemas/ContactRequest"
                         }
                     }
                 },
@@ -3955,10 +3995,6 @@
                 ]
             },
             "Conversation": {
-                "required": [
-                    "closed",
-                    "lastMessage"
-                ],
                 "type": "object",
                 "properties": {
                     "phoneNumber": {
@@ -6711,6 +6747,23 @@
                             },
                             "updated": {
                                 "$ref": "#/components/schemas/Updated"
+                            }
+                        }
+                    }
+                ]
+            },
+            "ContactRequest": {
+                "description": "Request payload that identifies or describes a contact: its name, email, mobile number and custom attributes, or the ID of an existing contact",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Person"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "attributes": {
+                                "type": "object",
+                                "description": "Custom attributes of the contact"
                             }
                         }
                     }

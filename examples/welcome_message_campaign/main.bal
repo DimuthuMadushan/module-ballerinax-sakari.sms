@@ -16,7 +16,6 @@ public function main() returns error? {
 
     // Step 1: Add the customer to the address book, merging with an existing contact if present.
     sms:CreateContactResponse created = check sakari->createContact(accountId, {
-        id: "",
         firstName,
         mobile: {number: mobileNumber, country: mobileCountry}
     }, mergeStrategy = "append");

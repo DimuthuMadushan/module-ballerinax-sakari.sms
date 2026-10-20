@@ -89,7 +89,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Autoresponder'
+              $ref: '#/components/schemas/AutoresponderRequest'
         description: "Autoresponder to create."
         required: true
       responses:
@@ -141,7 +141,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Autoresponder'
+              $ref: '#/components/schemas/AutoresponderRequest'
         description: "Autoresponder fields to update."
         required: true
       responses:
@@ -265,7 +265,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Contact'
+              $ref: '#/components/schemas/ContactRequest'
           text/csv:
             schema:
               type: string
@@ -346,7 +346,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Contact'
+              $ref: '#/components/schemas/ContactRequest'
         description: "Contact fields to update."
         required: true
       responses:
@@ -1249,7 +1249,7 @@ paths:
       - $ref: '#/components/parameters/accountIdPath'
       - name: url
         in: path
-        description: URL-encoded callback URL of the webhook subscription to remove
+        description: Callback URL of the webhook subscription to remove, as a plain URL. The connector URL-encodes it
         required: true
         schema:
           type: string
@@ -1939,6 +1939,36 @@ components:
       - match
       - response
       description: "A rule that automatically replies to incoming messages matching a pattern."
+    AutoresponderRequest:
+      type: object
+      properties:
+        match:
+          type: string
+          description: "Text or pattern that incoming messages are matched against."
+        response:
+          type: string
+          description: "Reply sent when an incoming message matches."
+        advanced:
+          type: boolean
+          default: false
+          description: "Whether advanced matching settings are used."
+        scheduleType:
+          type: string
+          enum:
+          - OOO
+          - in office
+          - custom
+          description: "When the autoresponder is active: out of office, in office or on a custom schedule."
+        customObject:
+          type: object
+          description: "Custom schedule settings used when the schedule type is custom."
+        group:
+          type: string
+          description: "Group whose incoming messages the autoresponder applies to."
+      required:
+      - match
+      - response
+      description: "Request payload for creating or updating an autoresponder."
     CampaignRequest:
       type: object
       properties:
@@ -2315,6 +2345,15 @@ components:
             readOnly: true
             description: "When and by whom the contact was last updated."
       description: "A contact in the Sakari address book."
+    ContactRequest:
+      allOf:
+      - $ref: '#/components/schemas/Person'
+      - type: object
+        properties:
+          attributes:
+            type: object
+            description: "Custom attributes of the contact."
+      description: "Request payload that identifies or describes a contact: its name, email, mobile number and custom attributes, or the ID of an existing contact."
     ContactFilter:
       type: object
       properties:
@@ -2385,9 +2424,6 @@ components:
         updated:
           $ref: '#/components/schemas/Updated'
           description: "When and by whom the conversation was last updated."
-      required:
-      - closed
-      - lastMessage
       description: "A message thread between the account and a single contact."
     DripCampaignStats:
       type: object
@@ -4165,7 +4201,7 @@ components:
         contacts:
           type: array
           items:
-            $ref: '#/components/schemas/Contact'
+            $ref: '#/components/schemas/ContactRequest'
           description: "Contacts to send the message to."
         filters:
           type: object

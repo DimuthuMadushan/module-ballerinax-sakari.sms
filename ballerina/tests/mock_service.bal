@@ -255,9 +255,10 @@ service / on ep0 {
     # + accountId - Account to apply operations to
     # + payload - Autoresponder to create
     # + return - The created autoresponder
-    resource function post accounts/[string accountId]/autoresponders(@http:Payload Autoresponder payload) returns AutoresponderResponseOk|ErrorResponseBadRequest|ErrorResponseInternalServerError {
-        Autoresponder created = {...payload};
-        created.id = "atr_1e5f7a90";
+    resource function post accounts/[string accountId]/autoresponders(@http:Payload AutoresponderRequest payload) returns AutoresponderResponseOk|ErrorResponseBadRequest|ErrorResponseInternalServerError {
+        map<anydata> fields = {...payload};
+        fields["id"] = "atr_1e5f7a90";
+        Autoresponder created = checkpanic fields.cloneWithType();
         return {body: {success: true, data: created}};
     }
 
@@ -276,7 +277,7 @@ service / on ep0 {
     # + mergeStrategy - Determines how existing contacts with matching mobile numbers are treated
     # + payload - Contact to create, or a CSV file of contacts to upload
     # + return - The created contacts, or a summary of the uploaded contacts
-    resource function post accounts/[string accountId]/contacts("append"|"core"|"remove"? mergeStrategy, @http:Payload Contact|string payload) returns CreateContactResponse|ErrorResponseBadRequest|ErrorResponseInternalServerError {
+    resource function post accounts/[string accountId]/contacts("append"|"core"|"remove"? mergeStrategy, @http:Payload ContactRequest|string payload) returns CreateContactResponse|ErrorResponseBadRequest|ErrorResponseInternalServerError {
         ContactsResponse response = {success: true, pagination: mockPagination, data: [mockContact]};
         return response;
     }
@@ -317,9 +318,10 @@ service / on ep0 {
     # + contactId - ID of contact
     # + payload - Contact fields to update
     # + return - The updated contact
-    resource function put accounts/[string accountId]/contacts/[string contactId](@http:Payload Contact payload) returns ContactResponse|ErrorResponseBadRequest|ErrorResponseInternalServerError {
-        Contact updated = {...payload};
-        updated.id = contactId;
+    resource function put accounts/[string accountId]/contacts/[string contactId](@http:Payload ContactRequest payload) returns ContactResponse|ErrorResponseBadRequest|ErrorResponseInternalServerError {
+        map<anydata> fields = {...payload};
+        fields["id"] = contactId;
+        Contact updated = checkpanic fields.cloneWithType();
         return {success: true, data: updated};
     }
 

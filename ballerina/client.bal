@@ -59,7 +59,7 @@ public isolated client class Client {
     # + headers - Headers to be sent with the request 
     # + payload - Autoresponder to create 
     # + return - The created autoresponder 
-    remote isolated function createAutoresponder(string accountId, Autoresponder payload, map<string|string[]> headers = {}) returns AutoresponderResponse|error {
+    remote isolated function createAutoresponder(string accountId, AutoresponderRequest payload, map<string|string[]> headers = {}) returns AutoresponderResponse|error {
         string resourcePath = string `/accounts/${getEncodedUri(accountId)}/autoresponders`;
         http:Request request = new;
         json jsonBody = jsondata:toJson(payload);
@@ -85,7 +85,7 @@ public isolated client class Client {
     # + headers - Headers to be sent with the request 
     # + payload - Autoresponder fields to update 
     # + return - The updated autoresponder 
-    remote isolated function updateAutoresponder(string accountId, string autoresponderId, Autoresponder payload, map<string|string[]> headers = {}) returns AutoresponderResponse|error {
+    remote isolated function updateAutoresponder(string accountId, string autoresponderId, AutoresponderRequest payload, map<string|string[]> headers = {}) returns AutoresponderResponse|error {
         string resourcePath = string `/accounts/${getEncodedUri(accountId)}/autoresponders/${getEncodedUri(autoresponderId)}`;
         http:Request request = new;
         json jsonBody = jsondata:toJson(payload);
@@ -135,7 +135,7 @@ public isolated client class Client {
     # + queries - Queries to be sent with the request 
     # + payload - Contact to create, as JSON, or a CSV file of contacts to upload 
     # + return - The created contacts, or a summary of the uploaded contacts 
-    remote isolated function createContact(string accountId, Contact payload, map<string|string[]> headers = {}, *CreateContactQueries queries) returns CreateContactResponse|error {
+    remote isolated function createContact(string accountId, ContactRequest payload, map<string|string[]> headers = {}, *CreateContactQueries queries) returns CreateContactResponse|error {
         string resourcePath = string `/accounts/${getEncodedUri(accountId)}/contacts`;
         resourcePath = resourcePath + check getPathForQueryParam(queries);
         http:Request request = new;
@@ -162,7 +162,7 @@ public isolated client class Client {
     # + headers - Headers to be sent with the request 
     # + payload - Contact fields to update 
     # + return - The updated contact 
-    remote isolated function updateContact(string accountId, string contactId, Contact payload, map<string|string[]> headers = {}) returns ContactResponse|error {
+    remote isolated function updateContact(string accountId, string contactId, ContactRequest payload, map<string|string[]> headers = {}) returns ContactResponse|error {
         string resourcePath = string `/accounts/${getEncodedUri(accountId)}/contacts/${getEncodedUri(contactId)}`;
         http:Request request = new;
         json jsonBody = jsondata:toJson(payload);
@@ -503,7 +503,7 @@ public isolated client class Client {
     # Unsubscribe to message events
     #
     # + accountId - Account to apply operations to
-    # + url - URL-encoded callback URL of the webhook subscription to remove
+    # + url - Callback URL of the webhook subscription to remove, as a plain URL. The connector URL-encodes it
     # + headers - Headers to be sent with the request 
     # + return - The webhook subscription was deleted 
     remote isolated function unsubscribeWebhook(string accountId, string url, map<string|string[]> headers = {}) returns error? {

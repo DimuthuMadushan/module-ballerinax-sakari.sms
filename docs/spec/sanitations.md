@@ -117,6 +117,21 @@ These changes are done in order to improve the overall usability, and as workaro
 - **Updated**: In the original specification, the `required` list moves into the inline `allOf` member, which also declares `id` (both schemas) and `email` (`User`) with their own descriptions.
 - **Reason**: To make an inherited field required, the generator re-declares it in the record without a doc comment, which produced `undocumented field` warnings for `User.email`, `User.id` and `Contact.id`.
 
+22. Add request models for contacts and autoresponders
+- **Original**: The create and update requests for contacts and autoresponders, and `SendMessagesRequest.contacts`, use the `Contact` and `Autoresponder` response schemas, which require the read-only `id`.
+- **Updated**: In the original specification, a new `ContactRequest` schema (`Person` plus `attributes`, with an optional `id` for referring to an existing contact) is used by `contacts.create` (JSON body), `contacts.update` and `SendMessagesRequest.contacts`. A new `AutoresponderRequest` schema (the `Autoresponder` fields without `id`) is used by `accounts.autoresponders.create` and `accounts.autoresponders.update`. `Contact` and `Autoresponder` are kept for responses.
+- **Reason**: Callers had to send a placeholder `id` when creating or updating a record.
+
+23. Make `Conversation.closed` and `Conversation.lastMessage` optional
+- **Original**: `Conversation` lists `closed` and `lastMessage` as required.
+- **Updated**: In the original specification, the `required` list is removed. `closed` stays a read-only `date-time` string.
+- **Reason**: An open conversation has no close date, and a conversation is not guaranteed to have a last message.
+
+24. Describe the `url` path parameter of `webhooks.unsubscribe` as a plain URL
+- **Original**: `URL-encoded callback URL of the webhook subscription to remove`.
+- **Updated**: In the original specification, `Callback URL of the webhook subscription to remove, as a plain URL. The connector URL-encodes it`.
+- **Reason**: The generated client already URL-encodes the path parameter, so passing an encoded value encoded it twice.
+
 ## OpenAPI cli command
 
 The following command was used to generate the Ballerina client from the OpenAPI specification. The command should be executed from the repository root directory.

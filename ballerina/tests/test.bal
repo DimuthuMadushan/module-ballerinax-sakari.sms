@@ -76,7 +76,6 @@ isolated function testCreateContact() returns error? {
     }
     Client sakari = check getClient();
     CreateContactResponse response = check sakari->createContact(accountId, {
-        id: "",
         firstName: "Chris",
         lastName: "Thomson",
         mobile: {number: "+14155550123", country: "US"}
@@ -90,7 +89,7 @@ isolated function testUpdateContact() returns error? {
         return;
     }
     Client sakari = check getClient();
-    ContactResponse response = check sakari->updateContact(accountId, "ctc_5f3a9c21", {id: "ctc_5f3a9c21", firstName: "Bob"});
+    ContactResponse response = check sakari->updateContact(accountId, "ctc_5f3a9c21", {firstName: "Bob"});
     test:assertEquals(response.data.firstName, "Bob");
 }
 
@@ -101,7 +100,6 @@ isolated function testDeleteContact() returns error? {
     }
     Client sakari = check getClient();
     CreateContactResponse created = check sakari->createContact(accountId, {
-        id: "",
         firstName: "Temp",
         mobile: {number: "+14155550199", country: "US"}
     });
@@ -255,7 +253,7 @@ isolated function testUnsubscribeWebhook() returns error? {
         return;
     }
     Client sakari = check getClient();
-    check sakari->unsubscribeWebhook(accountId, "https%3A%2F%2Fexample.com%2Fsakari%2Fcallback");
+    check sakari->unsubscribeWebhook(accountId, "https://example.com/sakari/callback");
 }
 
 @test:Config {groups: ["live_tests", "mock_tests"]}
@@ -272,7 +270,6 @@ isolated function testCreateAutoresponder() returns error? {
     }
     Client sakari = check getClient();
     AutoresponderResponse response = check sakari->createAutoresponder(accountId, {
-        id: "",
         'match: "STOP",
         response: "You have been unsubscribed."
     });
